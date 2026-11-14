@@ -1,8 +1,30 @@
-#include <stdio.h>
-#include "types_determination.h"
+#include <string.h>
+#include "main.h"
+#include "help.h"
+#include "schema.h"
+#include "stats.h"
 
-int main(void)
+int main(int argc, char *argv[])
 {
-    char *string = "-9223372036854775809";
-    printf("%llu\n", sizeof(long double));
+    if (argc < 2)
+    {
+        fprintf(stderr, "Error: No command specified. Use --help\n");
+        return EXIT_ERROR_ARGUMENTS;
+    }
+
+    if (strcmp(argv[1], "--help") == 0)
+    {
+        return run_help(argc);
+    }
+    if (strcmp(argv[1], "schema") == 0)
+    {
+        return run_schema(argc, argv);
+    }
+    if (strcmp(argv[1], "stats") == 0)
+    {
+        return run_schema(argc, argv);
+    }
+
+    fprintf(stderr, "Error: unknown command '%s'\n", argv[1]);
+    return EXIT_ERROR_ARGUMENTS;
 }

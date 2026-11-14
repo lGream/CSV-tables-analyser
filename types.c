@@ -1,27 +1,27 @@
-#pragma once
-#include "ctype.h"
+#include "types.h"
+#include <ctype.h>
+#include <stdlib.h>
 
 const long long LOWER_INT_BOUND = -9223372036854775807LL - 1LL;
 const long long UPPER_INT_BOUND = 9223372036854775807LL;
 
-typedef enum
+Type get_type(const Array *string_ptr)
 {
-    INT = 10,
-    DOUBLE = 11,
-    INVALID = 12,
-} ValueType;
-
-ValueType type(char *string)
-{
-    if (string == NULL || *string == '\0')
+    if (string_ptr == NULL || string_ptr->ptr == NULL)
     {
-        return INVALID;
+        return TYPE_INVALID;
     }
+
+    if (string_ptr->elts_number == 1)
+    {
+        return TYPE_NULL;
+    }
+    
+    char *string = string_ptr->ptr;
 
     int i = 0;
     int is_negative = 0;
 
-    // 1. Обрабатываем знак числа
     if (string[i] == '-')
     {
         is_negative = 1;
@@ -34,27 +34,24 @@ ValueType type(char *string)
 
     long long number = 0;
 
-    // 2. Идем по строке и собираем число
     while (string[i] != '\0')
     {
         char c = string[i];
 
-        // Если встретили точку — это гарантированно дробное число
         if (c == '.')
         {
-            return DOUBLE;
+            return TYPE_DOUBLE;
         }
 
-        if (c >= '0' && c <= '9')
+        if ('0' <= c <= '9')
         {
             int digit = c - '0';
 
-            // Проверка на переполнение ДО умножения и сложения
             if (is_negative)
             {
                 if (number < (LOWER_INT_BOUND + digit) / 10)
                 {
-                    return DOUBLE; // Переполнение вниз
+                    return TYPE_DOUBLE;
                 }
                 number = number * 10 - digit;
             }
@@ -62,7 +59,7 @@ ValueType type(char *string)
             {
                 if (number > (UPPER_INT_BOUND - digit) / 10)
                 {
-                    return DOUBLE; // Переполнение вверх
+                    return TYPE_DOUBLE;
                 }
                 number = number * 10 + digit;
             }
@@ -70,5 +67,5 @@ ValueType type(char *string)
         i++;
     }
 
-    return INT;
+    return TYPE_INT;
 }
