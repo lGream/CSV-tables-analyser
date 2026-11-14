@@ -1,5 +1,8 @@
 #include "columns.h"
+#include <math.h>
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
 Column *get_column_ptr(const ColumnsArray *columns, size_t i)
 {
@@ -76,7 +79,7 @@ int update_column(ColumnsArray *columns, size_t i, const Array *field)
 {
     Column *column = get_column_ptr(columns, i);
     long double number = strtold(field->ptr, NULL);
-    Type field_type = type(field);
+    Type field_type = get_type(field);
 
     if (field_type == TYPE_INVALID)
     {
@@ -146,10 +149,10 @@ int has_repeating(ColumnsArray *columns)
     return 0;
 }
 
-void print_column(const ColumnsArray *columns, size_t i)
+void print_column_stats(const ColumnsArray *columns, size_t i)
 {
     Column *column = get_column_ptr(columns, i);
-    printf("%llu", i);
+    printf("%llu\n", i);
     printf("%s\n", column->name);
     printf("%s\n", column->type_str);
     printf("%lld\n", column->nulls);
@@ -168,10 +171,20 @@ void print_column(const ColumnsArray *columns, size_t i)
     printf("negative %lld\n", column->negative);
     if (column->type == TYPE_INT)
     {
-        printf("even %lld\n", column->even);
+        printf("even %lld\n\n", column->even);
     }
     else
     {
-        printf("integer %lld\n", column->integer);
+        printf("integer %lld\n\n", column->integer);
     }
+}
+
+void free_columns(ColumnsArray *columns)
+{
+    for (size_t i = 0; i < columns->elts_number; i++)
+    {
+        Column *column = get_column_ptr(columns, i);
+        free(column->name);
+    }
+    free(columns->ptr);
 }

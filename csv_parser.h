@@ -1,6 +1,6 @@
 #pragma once
 
-#include "main.h"
+#include "exit_codes.h"
 #include "columns.h"
 #include <stdio.h>
 

@@ -1,8 +1,9 @@
-#include <string.h>
-#include "main.h"
+#include "exit_codes.h"
 #include "help.h"
 #include "schema.h"
 #include "stats.h"
+#include <stdio.h>
+#include <string.h>
 
 int main(int argc, char *argv[])
 {
@@ -22,7 +23,7 @@ int main(int argc, char *argv[])
     }
     if (strcmp(argv[1], "stats") == 0)
     {
-        return run_schema(argc, argv);
+        return run_stats(argc, argv);
     }
 
     fprintf(stderr, "Error: unknown command '%s'\n", argv[1]);

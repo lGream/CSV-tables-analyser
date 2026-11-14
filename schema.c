@@ -1,6 +1,8 @@
+#include "columns.h"
 #include "schema.h"
 #include "csv_parser.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 ExitCode run_schema(int argc, char *argv[])
 {
@@ -25,8 +27,10 @@ ExitCode run_schema(int argc, char *argv[])
 
     ColumnsArray columns;
     ExitCode code = parse(file, &columns);
+    fclose(file);
     if (code != EXIT_OK)
     {
+        free_columns(&columns);
         return code;
     }
 
@@ -35,8 +39,10 @@ ExitCode run_schema(int argc, char *argv[])
     for (size_t i = 0; i < columns.elts_number; i++)
     {
         Column *column = get_column_ptr(&columns, i);
-        printf("%llu %s %s", i, column->name, column->type_str);
+        printf("%llu %s %s\n", i, column->name, column->type_str);
     }
+
+    free_columns(&columns);
 
     return EXIT_OK;
 }

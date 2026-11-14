@@ -12,19 +12,10 @@ int is_delimiter(char c)
     return c == ',';
 }
 
-typedef struct Array
-{
-    void *ptr;
-    size_t capacity;
-    size_t elts_number;
-    size_t elt_size;
-} Array;
-
 int initialise(Array *array, size_t elt_size)
 {
-    assert(array != NULL);
     void *ptr = malloc(elt_size);
-    if (ptr == NULL)
+    if (array == NULL || ptr == NULL)
     {
         return 1;
     }

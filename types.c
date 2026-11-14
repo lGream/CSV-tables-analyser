@@ -43,7 +43,7 @@ Type get_type(const Array *string_ptr)
             return TYPE_DOUBLE;
         }
 
-        if ('0' <= c <= '9')
+        if ('0' <= c && c <= '9')
         {
             int digit = c - '0';
 

@@ -1,6 +1,7 @@
 #include "stats.h"
 #include "csv_parser.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 ExitCode run_stats(int argc, char *argv[])
 {
@@ -25,8 +26,10 @@ ExitCode run_stats(int argc, char *argv[])
 
     ColumnsArray columns;
     ExitCode code = parse(file, &columns);
+    fclose(file);
     if (code != EXIT_OK)
     {
+        free_columns(&columns);
         return code;
     }
 
@@ -34,8 +37,15 @@ ExitCode run_stats(int argc, char *argv[])
     printf("columns %llu\n", columns.elts_number);
     for (size_t i = 0; i < columns.elts_number; i++)
     {
-        print_column(&columns, i);
+        print_column_stats(&columns, i);
     }
+
+    for (size_t i = 0; i < columns.elts_number; i++)
+    {
+        free(get_column_ptr(&columns, i));
+    }
+
+    free_columns(&columns);
 
     return EXIT_OK;
 }

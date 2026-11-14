@@ -2,7 +2,6 @@
 
 #include "arrays.h"
 #include "types.h"
-#include <math.h>
 
 typedef struct Column
 {
@@ -45,4 +44,6 @@ int has_empty(ColumnsArray *columns);
 
 int has_repeating(ColumnsArray *columns);
 
-void print_column(const ColumnsArray *columns, size_t i);
+void print_column_stats(const ColumnsArray *columns, size_t i);
+
+void free_columns(ColumnsArray *columns);
