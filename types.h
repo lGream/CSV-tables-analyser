@@ -1,9 +1,7 @@
 #pragma once
-
-#include <ctype.h>
 #include "arrays.h"
 
-typedef enum Type
+typedef enum
 {
     TYPE_INVALID = 10,
     TYPE_NULL = 11,

@@ -1,5 +1,5 @@
 #include "types.h"
-#include <ctype.h>
+#include <stddef.h>
 #include <stdlib.h>
 
 const long long LOWER_INT_BOUND = -9223372036854775807LL - 1LL;

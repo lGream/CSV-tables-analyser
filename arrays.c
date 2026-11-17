@@ -85,25 +85,6 @@ int append(Array *array, void *elt)
     return 0;
 }
 
-int clear(Array *array)
-{
-    if (array == NULL || array->ptr == NULL)
-    {
-        return 1;
-    }
-
-    array->elts_number = 0;
-
-    void *ptr = malloc(array->capacity * array->elt_size);
-    if (ptr == NULL)
-    {
-        return 1;
-    }
-
-    array->ptr = ptr;
-    return 0;
-}
-
 int append_char(Array *array, char c)
 {
     return append(array, &c);
@@ -112,6 +93,38 @@ int append_char(Array *array, char c)
 int append_string(Array *array, const char *string)
 {
     return append(array, &string);
+}
+
+int trim_right(Array *string)
+{
+    char *string_ptr = string->ptr;
+    void *new_ptr;
+    size_t new_elts_number = string->elts_number;
+    for (size_t len = string->elts_number; len > 0; len--)
+    {
+        char c = string_ptr[len - 2];
+        if (is_space(c))
+        {
+            continue;
+        }
+        new_elts_number = len;
+        string_ptr[len - 1] = '\0';
+        break;
+    }
+    if (new_elts_number == string->elts_number)
+    {
+        return 0;
+    }
+    new_ptr = realloc(string->ptr, new_elts_number);
+
+    if (new_ptr == NULL)
+    {
+        return 1;
+    }
+
+    string->ptr = new_ptr;
+    string->elts_number = new_elts_number;
+    return 0;
 }
 
 int wrap_in_quotes(Array *string)
@@ -147,37 +160,5 @@ int wrap_in_quotes(Array *string)
     free(buffer);
     string->ptr = new_ptr;
 
-    return 0;
-}
-
-int trim_right(Array *string)
-{
-    char *string_ptr = string->ptr;
-    void *new_ptr;
-    size_t new_elts_number;
-    for (size_t len = string->elts_number; len > 0; len--)
-    {
-        char c = string_ptr[len - 2];
-        if (is_space(c))
-        {
-            continue;
-        }
-        new_elts_number = len;
-        string_ptr[len - 1] = '\0';
-        break;
-    }
-    if (new_elts_number == string->elts_number)
-    {
-        return 0;
-    }
-    new_ptr = realloc(string->ptr, new_elts_number);
-
-    if (new_ptr == NULL)
-    {
-        return 1;
-    }
-
-    string->ptr = new_ptr;
-    string->elts_number = new_elts_number;
     return 0;
 }

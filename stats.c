@@ -1,7 +1,12 @@
 #include "stats.h"
 #include "csv_parser.h"
+#include "types.h"
 #include <stdio.h>
 #include <stdlib.h>
+
+void print_stats(const ColumnsArray *columns);
+
+void print_column(const ColumnsArray *columns, size_t i);
 
 ExitCode run_stats(int argc, char *argv[])
 {
@@ -25,27 +30,57 @@ ExitCode run_stats(int argc, char *argv[])
     }
 
     ColumnsArray columns;
-    ExitCode code = parse(file, &columns);
+    ExitCode code = run_csv_parser(file, &columns);
     fclose(file);
+
     if (code != EXIT_OK)
     {
         free_columns(&columns);
         return code;
     }
 
-    printf("rows %llu\n", get_column_ptr(&columns, 0)->count);
-    printf("columns %llu\n", columns.elts_number);
-    for (size_t i = 0; i < columns.elts_number; i++)
-    {
-        print_column_stats(&columns, i);
-    }
-
-    for (size_t i = 0; i < columns.elts_number; i++)
-    {
-        free(get_column_ptr(&columns, i));
-    }
-
+    print_stats(&columns);
     free_columns(&columns);
 
     return EXIT_OK;
+}
+
+void print_stats(const ColumnsArray *columns)
+{
+    printf("rows %zu\n", get_column_ptr(columns, 0)->count_total);
+    printf("columns %zu\n\n", columns->elts_number);
+    for (size_t i = 0; i < columns->elts_number; i++)
+    {
+        print_column(columns, i);
+    }
+}
+
+void print_column(const ColumnsArray *columns, size_t i)
+{
+    Column *column = get_column_ptr(columns, i);
+    printf("column %zu\n", i);
+    printf("name \"%s\"\n", column->name);
+    printf("type %s\n", column->type_str);
+    printf("nulls %zu\n", column->nulls);
+    if (column->type == TYPE_INT)
+    {
+        printf("min %.0Lf\n", column->min);
+        printf("max %.0Lf\n", column->max);
+    }
+    else
+    {
+        printf("min %.6Lf\n", column->min);
+        printf("max %.6Lf\n", column->max);
+    }
+    printf("mean %Lf\n", column->mean);
+    printf("positive %zu\n", column->positive);
+    printf("negative %zu\n", column->negative);
+    if (column->type == TYPE_INT)
+    {
+        printf("even %zu\n\n", column->even);
+    }
+    else
+    {
+        printf("integer %zu\n\n", column->integer);
+    }
 }

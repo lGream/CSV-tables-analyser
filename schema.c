@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+void print_schema(const ColumnsArray *columns);
+
 ExitCode run_schema(int argc, char *argv[])
 {
     if (argc < 3)
@@ -26,23 +28,28 @@ ExitCode run_schema(int argc, char *argv[])
     }
 
     ColumnsArray columns;
-    ExitCode code = parse(file, &columns);
+    ExitCode code = run_csv_parser(file, &columns);
     fclose(file);
-    if (code != EXIT_OK)
-    {
-        free_columns(&columns);
-        return code;
-    }
 
-    printf("rows %llu\n", get_column_ptr(&columns, 0)->count);
-    printf("columns %llu\n", columns.elts_number);
-    for (size_t i = 0; i < columns.elts_number; i++)
+    if (code == EXIT_OK)
     {
-        Column *column = get_column_ptr(&columns, i);
-        printf("%llu %s %s\n", i, column->name, column->type_str);
+        print_schema(&columns);
     }
 
     free_columns(&columns);
+    return code;
+}
 
-    return EXIT_OK;
+void print_schema(const ColumnsArray *columns)
+{
+
+    printf("rows %zu\n", get_column_ptr(columns, 0)->count_nonnull);
+    printf("columns %zu\n", columns->elts_number);
+
+    for (size_t i = 0; i < columns->elts_number; i++)
+    {
+        Column *column = get_column_ptr(columns, i);
+        printf("%zu \"%s\" %s\n", i, column->name, column->type_str);
+    }
+    printf("\n");
 }
