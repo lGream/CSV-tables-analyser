@@ -39,8 +39,8 @@ int initialise_column(Column *column, const Array *field)
     column->type = TYPE_INT;
     column->nulls = 0;
 
-    column->int_min = INT_MAX;
-    column->int_max = INT_MIN;
+    column->int_min = UPPER_INT_BOUND;
+    column->int_max = LOWER_INT_BOUND;
     column->int_sum = 0;
 
     column->min = +INFINITY;

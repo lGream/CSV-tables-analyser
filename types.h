@@ -1,6 +1,9 @@
 #pragma once
 #include "arrays.h"
 
+static const long long LOWER_INT_BOUND = -9223372036854775807LL - 1LL;
+static const long long UPPER_INT_BOUND = 9223372036854775807LL;
+
 typedef enum
 {
     TYPE_INVALID = 10,

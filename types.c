@@ -2,9 +2,6 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-const long long LOWER_INT_BOUND = -9223372036854775807LL - 1LL;
-const long long UPPER_INT_BOUND = 9223372036854775807LL;
-
 Type get_type(const Array *string_ptr)
 {
     if (string_ptr == NULL || string_ptr->ptr == NULL)
