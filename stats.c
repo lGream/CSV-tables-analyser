@@ -64,8 +64,8 @@ void print_column(const ColumnsArray *columns, size_t i)
     printf("nulls %zu\n", column->nulls);
     if (column->type == TYPE_INT)
     {
-        printf("min %.0Lf\n", column->min);
-        printf("max %.0Lf\n", column->max);
+        printf("min %lld\n", column->int_min);
+        printf("max %lld\n", column->int_max);
     }
     else
     {

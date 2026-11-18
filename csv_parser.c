@@ -1,4 +1,5 @@
 #include "csv_parser.h"
+#include "chars.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
@@ -19,6 +20,8 @@ typedef enum
     CSV_ERROR_REPEATING_COLUMNS = 105,
     CSV_ERROR_FIELDS_NUMBER = 106
 } ParseCsvStatus;
+
+ExitCode run_csv_parser(FILE *file, ColumnsArray *columns);
 
 ParseCsvStatus parse_csv(FILE *file, ColumnsArray *columns, size_t *error_line);
 

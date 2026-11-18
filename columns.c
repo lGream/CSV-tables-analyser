@@ -1,8 +1,15 @@
 #include "columns.h"
 #include "types.h"
+#include "chars.h"
 #include <math.h>
 #include <string.h>
 #include <stdlib.h>
+
+void remove_minus_if_zero(long double *x);
+
+long long min(long long a, long long b);
+
+long long max(long long a, long long b);
 
 Column *get_column_ptr(const ColumnsArray *columns, size_t i)
 {
@@ -31,9 +38,15 @@ int initialise_column(Column *column, const Array *field)
     memcpy(column->name, field->ptr, len * sizeof(char));
     column->type = TYPE_INT;
     column->nulls = 0;
+
+    column->int_min = INT_MAX;
+    column->int_max = INT_MIN;
+    column->int_sum = 0;
+
     column->min = +INFINITY;
     column->max = -INFINITY;
-    column->sum = 0;
+    column->sum = 0.0L;
+
     column->count_nonnull = 0;
     column->count_total = 0;
     column->positive = 0;
@@ -67,6 +80,13 @@ int update_column(ColumnsArray *columns, size_t i, const Array *field)
         return 0;
     }
 
+    if (column->type == TYPE_INT)
+    {
+        column->int_min = min((long long)number, column->int_min);
+        column->int_max = max((long long)number, column->int_max);
+        column->int_sum += (long long)number;
+    }
+
     column->min = fmin(column->min, number);
     column->max = fmax(column->max, number);
     column->sum += number;
@@ -97,7 +117,12 @@ void post_init(ColumnsArray *columns)
     for (size_t i = 0; i < columns->elts_number; i++)
     {
         Column *column = get_column_ptr(columns, i);
-        column->mean = column->count_nonnull != 0 ? (column->sum) / (column->count_nonnull) : 0;
+        long double sum = column->type == TYPE_INT ? column->int_sum : column->sum;
+        column->mean = column->count_nonnull != 0 ? (sum) / (column->count_nonnull) : +0.0L;
+        remove_minus_if_zero(&(column->mean));
+        remove_minus_if_zero(&(column->sum));
+        remove_minus_if_zero(&(column->min));
+        remove_minus_if_zero(&(column->max));
 
         switch (column->type)
         {
@@ -162,4 +187,22 @@ void free_columns(ColumnsArray *columns)
     {
         free(columns->ptr);
     }
+}
+
+void remove_minus_if_zero(long double *x)
+{
+    if (*x == -0.0L)
+    {
+        *x = 0.0L;
+    }
+}
+
+long long min(long long a, long long b)
+{
+    return a < b ? a : b;
+}
+
+long long max(long long a, long long b)
+{
+    return a > b ? a : b;
 }

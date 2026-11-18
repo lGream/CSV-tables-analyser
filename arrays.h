@@ -10,10 +10,6 @@ typedef struct Array
     size_t elt_size;
 } Array;
 
-int is_space(char c);
-
-int is_delimiter(char c);
-
 int initialise(Array *array, size_t elt_size);
 
 int expand(Array *array, size_t new_elts_number);

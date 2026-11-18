@@ -9,6 +9,9 @@ typedef struct Column
     Type type;
     char *type_str;
     size_t nulls;
+    long long int_min;
+    long long int_max;
+    long long int_sum;
     long double min;
     long double max;
     long double sum;

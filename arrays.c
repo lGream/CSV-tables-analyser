@@ -1,16 +1,8 @@
 #include "arrays.h"
+#include "chars.h"
 #include <string.h>
 #include <stdlib.h>
 
-int is_space(char c)
-{
-    return c == ' ' || c == '\t';
-}
-
-int is_delimiter(char c)
-{
-    return c == ',';
-}
 
 int initialise(Array *array, size_t elt_size)
 {
@@ -124,41 +116,5 @@ int trim_right(Array *string)
 
     string->ptr = new_ptr;
     string->elts_number = new_elts_number;
-    return 0;
-}
-
-int wrap_in_quotes(Array *string)
-{
-
-    if (string == NULL || string->ptr == NULL)
-    {
-        return 1;
-    }
-
-    size_t len = string->elts_number - 1;
-
-    char *buffer = malloc((len + 3) * sizeof(char));
-
-    if (buffer == NULL)
-    {
-        return 1;
-    }
-
-    buffer[0] = '"';
-    buffer[len + 1] = '"';
-    buffer[len + 2] = '\0';
-    memcpy(buffer + 1, string->ptr, len);
-
-    void *new_ptr = realloc(string->ptr, (len + 3) * sizeof(char));
-
-    if (new_ptr == NULL)
-    {
-        return 1;
-    }
-
-    memcpy(new_ptr, buffer, len + 3);
-    free(buffer);
-    string->ptr = new_ptr;
-
     return 0;
 }
